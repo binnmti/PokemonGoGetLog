@@ -294,6 +294,7 @@
     <Content Include="Views\PokemonGetDatas\Details.cshtml" />
     <Content Include="Views\PokemonGetDatas\Edit.cshtml" />
     <Content Include="Views\PokemonGetDatas\Index.cshtml" />
+    <Content Include="Views\Home\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
