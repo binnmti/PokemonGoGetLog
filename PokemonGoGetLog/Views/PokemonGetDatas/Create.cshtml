@@ -1,0 +1,98 @@
+﻿@model PokemonGoGetLog.Models.PokemonGetData
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>PokemonGetData</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.PokemonName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.PokemonName, new SelectList(Model.Pokemons, "Id", "Name"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PokemonName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Position, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Position, new { @class = "form-control", style = "width: 100%;", placeholder = "↓下のマップをクリックしてポケモンをゲットした場所を選んでください", @readonly = "readonly" })
+                @Html.HiddenFor(model => model.MapX)
+                @Html.HiddenFor(model => model.MapY)
+                @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="map-embed">
+            <input id="searchTextField" class="form-control" type="text" name="city" placeholder="ココに場所を入力してください" onKeyPress="return submitStop(event);" />
+            <div id="map-canvas"></div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cp, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Cp, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Cp, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.User, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.User, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ImageUrl, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ImageUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="ポケモンここでゲットだぜ！" class="btn btn-primary btn-lg" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCp0vG55IKYia0_jNkFaEkiIETmJZ5PQUY">
+</script>
+<script src="~/Scripts/GoogleMapUtil.js"></script>
+<script type="text/javascript">
+    var map = new GoogleMapUtil("map-canvas", "searchTextField", onClickMap);
+
+    //マップをクリックした時コールバック
+    function onClickMap(latlng, address) {
+        document.getElementById("Position").value = address;
+        document.getElementById("MapX").value = latlng.lat();
+        document.getElementById("MapY").value = latlng.lng();
+    }
+    function submitStop(e) {
+        if (!e) var e = window.event;
+        if (e.keyCode == 13)
+            return false;
+    }
+</script>
+

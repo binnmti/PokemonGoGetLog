@@ -1,6 +1,9 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -29,5 +32,31 @@ namespace PokemonGoGetLog.Models
         {
             return new ApplicationDbContext();
         }
+
+        public override int SaveChanges()
+        {
+            AddTimestamps();
+            return base.SaveChanges();
+        }
+        public override async Task<int> SaveChangesAsync()
+        {
+            AddTimestamps();
+            return await base.SaveChangesAsync();
+        }
+
+        private void AddTimestamps()
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is PokemonGetData && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            foreach (var entity in entities)
+            {
+                if (entity.State == EntityState.Added)
+                {
+                    ((PokemonGetData)entity.Entity).CreateDateTime = DateTime.UtcNow;
+                }
+                ((PokemonGetData)entity.Entity).UpdateDateTime = DateTime.UtcNow;
+            }
+        }
+
+        public DbSet<PokemonGetData> PokemonGetDatas { get; set; }
     }
 }
