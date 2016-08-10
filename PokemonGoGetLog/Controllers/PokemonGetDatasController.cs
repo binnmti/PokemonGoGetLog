@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 using PokemonGoGetLog.Models;
 
 namespace PokemonGoGetLog.Controllers
@@ -16,9 +17,17 @@ namespace PokemonGoGetLog.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: PokemonGetDatas
-        public async Task<ActionResult> Index()
+        //public async Task<ActionResult> Index()
+        //{
+        //    return View(await db.PokemonGetDatas.ToListAsync());
+        //}
+
+        public ActionResult Index(int? page)
         {
-            return View(await db.PokemonGetDatas.ToListAsync());
+            //https://github.com/TroyGoode/PagedList
+            var datas = db.PokemonGetDatas.OrderBy(x => x.CreateDateTime);
+            var pageNumber = page ?? 1;
+            return View(datas.ToPagedList(pageNumber, 25));
         }
 
         // GET: PokemonGetDatas/Details/5
