@@ -9,7 +9,7 @@ namespace PokemonGoGetLog.Models
     {
         public long PokemonGetDataId { get; set; }
 
-        [Display(Name = "ゲットしたポケモン")]
+        [Display(Name = "ポケモン")]
         public string PokemonName { get; set; }
         public IEnumerable<PokemonData> Pokemons { get; set; }
 
