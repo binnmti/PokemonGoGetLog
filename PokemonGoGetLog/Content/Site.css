@@ -20,7 +20,170 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 80%;
+}
+
+/* - ---------------------------------- */
+
+@charset "UTF-8";
+
+/* 必須 */
+.required{
+    margin: 0 0.5em;
+    padding: 0 0.5em;
+    -webkit-border-radius: 6px;   /* Safari,Google Chrome */
+    -moz-border-radius: 6px;      /* Firefox12まで */
+    border-radius: 6px;           /* Firefox13以降 */
+    background-color: #ff3957;
+    color: #fff;
+    font-weight: normal;
+    font-size: 90%;
+}
+
+/*------------------------------------------------------------*/
+/* 表題 */
+/*------------------------------------------------------------*/
+h1{
+    margin: 0 0 0.4em 0;
+    padding: 0.5em;
+    background-color: #0a6c9d;
+    font-size: 1.3em;
+    font-weight: normal;
+    color: #fff;
+}
+
+h2{
+    margin: 1em 0 0 0;
+    padding: 0.5em;
+    border-top: 2px solid #3399ff;
+    border-bottom: 1px solid #3399ff;
+    background-color: #e3f5fd;
+    font-size: 1.1em;
+    line-height; 0;
+}
+
+h3{
+    margin: 1em 0 1em 0;
+    padding: 0.5em;
+    border-top: 2px solid #333;
+    border-bottom: 1px solid #333;
+    background-color: #efefef;
+    font-size: 1em;
+    line-height; 0;
+    font-weight: normal;
+}
+
+h4{
+    margin: 5px 0 0 0;
+    padding: 5px 5px 0 5px;
+    font-size: 1em;
+    text-align: left;
+}
+
+/*------------------------------------------------------------*/
+/* 実行などボタン周り */
+/*------------------------------------------------------------*/
+.regist_button{
+    margin: 1.5em 0 0 0;
+    padding: 2em;
+    border: 1px solid #90847b;
+    background-color: #edebe3;
+    text-align: center;
+}
+
+/*------------------------------------------------------------*/
+/* フォームラベル */
+/*------------------------------------------------------------*/
+label.head{
+    margin-top: 1em;
+    padding: 0.5em 0;
+    border-left: 5px solid #3399ff;
+    background-color: #c4f2c3;
+    text-align: left;
+    font-weight: normal;
+}
+
+/*------------------------------------------------------------*/
+/* ブラウザ横幅別 */
+/*------------------------------------------------------------*/
+/* 90px～ */
+@media (min-width: 90px) {
+    label.head{
+        width: 100%;
+    }
+
+    .regist_button input[type="button"]{
+        display: none;
+    }
+}
+
+/* 768px～ */
+@media (min-width: 768px) {
+    label.head{
+        width: 10em;
+    }
+
+    select#City {
+        width: 30%
+    }
+
+    input#Cp {
+        width: 20%
+    }
+
+    input#User {
+        width: 25%
+    }
+
+    .regist_button input[type="button"]{
+        display: inline;
+    }
+}
+
+/* 992px～ */
+@media (min-width: 992px) {
+    label.head{
+        width: 10em;
+    }
+
+    select#City {
+        width: 30%
+    }
+
+    input#Cp {
+        width: 20%
+    }
+
+    input#User {
+        width: 25%
+    }
+
+    .regist_button input[type="button"]{
+        display: inline;
+    }
+}
+
+/* 1200px～ */
+@media (min-width: 1200px) {
+    label.head{
+        width: 10em;
+    }
+
+    select#City {
+        width: 30%
+    }
+
+    input#Cp {
+        width: 20%
+    }
+
+    input#User {
+        width: 25%
+    }
+
+    .regist_button input[type="button"]{
+        display: inline;
+    }
 }
 
 .map-embed
@@ -43,3 +206,25 @@ textarea {
 	max-width: none ;
 }
 
+
+#searchTextField {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}

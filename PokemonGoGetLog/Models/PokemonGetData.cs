@@ -9,12 +9,12 @@ namespace PokemonGoGetLog.Models
     {
         public long PokemonGetDataId { get; set; }
 
-        [Display(Name = "ポケモン")]
+        [Display(Name = "ゲットしたポケモン")]
         public string PokemonName { get; set; }
         public IEnumerable<PokemonData> Pokemons { get; set; }
 
-        [Display(Name = "ここ")]
-        [Required(ErrorMessage = "場所が入力されていません。")]
+        [Display(Name = "ゲットした場所")]
+        [Required(ErrorMessage = "ゲットした場所が入力されていません。")]
         public string Position { get; set; }
         public double MapX { get; set; }
         public double MapY { get; set; }
