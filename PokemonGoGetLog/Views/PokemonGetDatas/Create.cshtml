@@ -15,8 +15,8 @@
         <div class="form-group">
             <label for="name_family" class="control-label col-md-2 head"><span class="required">必須</span>ポケモン</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.PokemonName, new SelectList(Model.Pokemons, "Name", "Name"), new {@class = "form-control"})
-                @Html.ValidationMessageFor(model => model.PokemonName, "", new {@class = "text-danger"})
+                @Html.DropDownListFor(model => model.PokemonName, new SelectList(Model.Pokemons, "Name", "Name"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PokemonName, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -29,10 +29,12 @@
                 @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="map-embed">
             <input id="searchTextField" class="form-control" type="text" name="city" placeholder="ココに場所を入力してください" onKeyPress="return submitStop(event);" />
-            <div id="map-canvas"></div>
+            <div id="loading"><img src="~/Content/gif-load.gif"></div>
+            <div id="container">
+                <div id="map-canvas"></div>
+            </div>
         </div>
 
         <div class="form-group">
@@ -73,6 +75,8 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script src="/Scripts/jquery-1.10.2.js"></script>
 
 <script type="text/javascript"
         src="http://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCp0vG55IKYia0_jNkFaEkiIETmJZ5PQUY">

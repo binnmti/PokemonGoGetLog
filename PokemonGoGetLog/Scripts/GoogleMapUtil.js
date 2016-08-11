@@ -1,27 +1,36 @@
+/// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="../typings/google.maps.d.ts" />
 "use strict";
+//ToDo これはモジュールが良い
 var GoogleMapUtil = (function () {
     function GoogleMapUtil(canvasId, searchTextId, onClickMap) {
         GoogleMapUtil.canvasId = canvasId;
         GoogleMapUtil.searchTextId = searchTextId;
         GoogleMapUtil.geocoder = new google.maps.Geocoder();
         GoogleMapUtil.onClickMap = onClickMap;
-        setStartPosition(new google.maps.LatLng(0, 0));
+        setStartPosition(new google.maps.LatLng(GoogleMapUtil.firstPositionX, GoogleMapUtil.firstPositionY));
         setAutocomplete();
         setGeolocation();
         function setGeolocation() {
             if (navigator.geolocation) {
+                //ToDo フェードインアウトがうまくいっていない
+                $("#loading").fadeIn();
+                $("#container").fadeOut();
                 navigator.geolocation.getCurrentPosition(
                 // 成功処理
                 function (info) {
                     var center = new google.maps.LatLng(info.coords.latitude, info.coords.longitude);
                     GoogleMapUtil.map.panTo(center);
+                    $("#loading").fadeOut();
+                    $("#container").fadeIn();
                 }, 
                 // エラー処理
                 function (info) {
                     var latlng = getCookieLatlng();
                     GoogleMapUtil.map.panTo(latlng);
                     console.log('現在地取得エラー: ' + info.code);
+                    $("#loading").fadeOut();
+                    $("#container").fadeIn();
                     return;
                 });
             }
@@ -44,10 +53,10 @@ var GoogleMapUtil = (function () {
             });
         }
         function getCookieLatlng() {
-            //クッキーから現在地を取る。
+            //ToDo クッキーから現在地を取る。
             var cookieX = 0;
             var cookieY = 0;
-            var center = new google.maps.LatLng(cookieX, cookieY);
+            var center = new google.maps.LatLng(GoogleMapUtil.firstPositionX, GoogleMapUtil.firstPositionY);
             return center;
         }
         function setStartPosition(latlng) {
@@ -87,6 +96,9 @@ var GoogleMapUtil = (function () {
             });
         }
     }
+    //初期位置は六本木ヒルズ
+    GoogleMapUtil.firstPositionX = 35.660464;
+    GoogleMapUtil.firstPositionY = 139.729281;
     return GoogleMapUtil;
 }());
 //# sourceMappingURL=GoogleMapUtil.js.map
