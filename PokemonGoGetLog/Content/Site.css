@@ -236,3 +236,17 @@ label.head{
 	margin-left:-30px;
     display:none;
 }
+
+ul.social-button {
+    list-style-type: none;
+}
+
+ul.social-button li {
+    float: left;
+    margin: 0px 10px 15px 0;
+    padding: 0px;
+    height: 20px;
+}
+.fb_iframe_widget span {
+    vertical-align: baseline !important;
+}
