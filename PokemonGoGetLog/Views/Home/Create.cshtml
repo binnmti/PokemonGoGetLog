@@ -21,7 +21,7 @@
         <div class="form-group">
             <label for="name_family" class="control-label col-md-2 head"><span class="required">必須</span>ゲットした場所</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Position, new { @class = "form-control", style = "width: 100%;", placeholder = "↓下のマップをクリックしてポケモンをゲットした場所を選んでください", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Position, new { @class = "form-control", style = "width: 100%;", placeholder = "ココに場所を入力するか下のマップをクリックしてください", onKeyPress = "return submitStop(event);" })
                 @Html.HiddenFor(model => model.MapX)
                 @Html.HiddenFor(model => model.MapX)
                 @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
@@ -29,7 +29,7 @@
         </div>
 
         <div class="map-embed">
-            <input id="searchTextField" class="form-control" type="text" name="city" placeholder="ココに場所を入力してください" onKeyPress="return submitStop(event);" />
+            ↓下のマップをクリックすると場所が特定できます
             <div id="map-canvas"></div>
         </div>
 
@@ -76,7 +76,7 @@
 </script>
 <script src="~/Scripts/GoogleMapUtil.js"></script>
 <script type="text/javascript">
-    var map = new GoogleMapUtil("map-canvas", "searchTextField", onClickMap);
+    var map = new GoogleMapUtil("map-canvas", "Position", onClickMap);
 
     //マップをクリックした時コールバック
     function onClickMap(latlng, address) {

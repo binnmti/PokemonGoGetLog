@@ -67,9 +67,6 @@ var GoogleMapUtil = (function () {
             var canvas = document.getElementById(GoogleMapUtil.canvasId);
             GoogleMapUtil.map = new google.maps.Map(canvas, mapOptions);
             google.maps.event.addListener(GoogleMapUtil.map, "click", setMarkerEvent);
-            var input = (document.getElementById('pac-input'));
-            var types = document.getElementById(GoogleMapUtil.searchTextId);
-            GoogleMapUtil.map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
         }
         function setMarkerEvent(event) {
             var ll = new google.maps.LatLng(event.latLng.lat(), event.latLng.lng());
