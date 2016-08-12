@@ -65,6 +65,7 @@ class GoogleMapUtil {
 
             google.maps.event.addListener(autocomplete, "place_changed", () => {
                 var place = autocomplete.getPlace();
+                GoogleMapUtil.map.setZoom(17);
                 GoogleMapUtil.map.setCenter(place.geometry.location);
                 setMarker(place.geometry.location);
             });

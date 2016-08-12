@@ -48,6 +48,7 @@ var GoogleMapUtil = (function () {
             //Autocompleteで位置が変更された
             google.maps.event.addListener(autocomplete, "place_changed", function () {
                 var place = autocomplete.getPlace();
+                GoogleMapUtil.map.setZoom(17);
                 GoogleMapUtil.map.setCenter(place.geometry.location);
                 setMarker(place.geometry.location);
             });

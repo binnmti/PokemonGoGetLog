@@ -21,9 +21,10 @@
         <div class="form-group">
             <label for="name_family" class="control-label col-md-2 head"><span class="required">必須</span>ゲットした場所</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Position, new { @class = "form-control", style = "width: 100%;", placeholder = "ココに場所を入力するか下のマップをクリックしてください", onKeyPress = "return submitStop(event);" })
+                @Html.TextBoxFor(model => model.Position, new { @class = "form-control", placeholder = "ココに場所を入力するか下のマップをクリックしてください", onKeyPress = "return submitStop(event);" })
+                <input type="button" value="クリア" class="btn" onclick="clr()" />
                 @Html.HiddenFor(model => model.MapX)
-                @Html.HiddenFor(model => model.MapX)
+                @Html.HiddenFor(model => model.MapY)
                 @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -80,7 +81,8 @@
 
     //マップをクリックした時コールバック
     function onClickMap(latlng, address) {
-        document.getElementById("Position").value = address;
+        $("#Position").val(address);
+        //document.getElementById("Position").value = address;
         document.getElementById("MapX").value = latlng.lat();
         document.getElementById("MapY").value = latlng.lng();
     }
@@ -88,6 +90,10 @@
         if (!e) var e = window.event;
         if (e.keyCode == 13)
             return false;
+    }
+
+    function clr() {
+        $("#Position").val("");
     }
 </script>
 
