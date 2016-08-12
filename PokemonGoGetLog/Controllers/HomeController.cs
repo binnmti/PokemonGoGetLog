@@ -14,7 +14,9 @@ namespace PokemonGoGetLog.Controllers
 {
     public class HomeController : Controller
     {
-        private const string GoogleMapUrl = "http://maps.googleapis.com/maps/api/js?libraries=places&key=";
+        //
+        private const string GoogleMapUrl = "https://maps-api-ssl.google.com/maps/api/js?libraries=places&key=";
+        //private const string GoogleMapUrl = "http://maps.googleapis.com/maps/api/js?libraries=places&key=";
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         public ActionResult Index(int? page)
