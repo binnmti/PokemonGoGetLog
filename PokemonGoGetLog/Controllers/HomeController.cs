@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -13,12 +14,13 @@ namespace PokemonGoGetLog.Controllers
 {
     public class HomeController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private const string GoogleMapUrl = "http://maps.googleapis.com/maps/api/js?libraries=places&key=";
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         public ActionResult Index(int? page)
         {
             //https://github.com/TroyGoode/PagedList
-            var datas = db.PokemonGetDatas.OrderBy(x => x.CreateDateTime);
+            var datas = _db.PokemonGetDatas.OrderBy(x => x.CreateDateTime);
             var pageNumber = page ?? 1;
             return View(datas.ToPagedList(pageNumber, 25));
         }
@@ -30,7 +32,7 @@ namespace PokemonGoGetLog.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PokemonGetData pokemonGetData = await db.PokemonGetDatas.FindAsync(id);
+            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
             if (pokemonGetData == null)
             {
                 return HttpNotFound();
@@ -49,6 +51,10 @@ namespace PokemonGoGetLog.Controllers
                     Name = val
                 })
             };
+
+            var appSettings = ConfigurationManager.AppSettings;
+            var appKey = appSettings["GoogleMapAPI"];
+            ViewBag.GoogleMapUrl = GoogleMapUrl + appKey;
             return View(pokemonGetData);
         }
 
@@ -66,8 +72,8 @@ namespace PokemonGoGetLog.Controllers
             });
             if (ModelState.IsValid)
             {
-                db.PokemonGetDatas.Add(pokemonGetData);
-                await db.SaveChangesAsync();
+                _db.PokemonGetDatas.Add(pokemonGetData);
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
@@ -81,7 +87,7 @@ namespace PokemonGoGetLog.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PokemonGetData pokemonGetData = await db.PokemonGetDatas.FindAsync(id);
+            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
             if (pokemonGetData == null)
             {
                 return HttpNotFound();
@@ -98,8 +104,8 @@ namespace PokemonGoGetLog.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pokemonGetData).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _db.Entry(pokemonGetData).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(pokemonGetData);
@@ -112,7 +118,7 @@ namespace PokemonGoGetLog.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PokemonGetData pokemonGetData = await db.PokemonGetDatas.FindAsync(id);
+            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
             if (pokemonGetData == null)
             {
                 return HttpNotFound();
@@ -125,9 +131,9 @@ namespace PokemonGoGetLog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            PokemonGetData pokemonGetData = await db.PokemonGetDatas.FindAsync(id);
-            db.PokemonGetDatas.Remove(pokemonGetData);
-            await db.SaveChangesAsync();
+            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
+            _db.PokemonGetDatas.Remove(pokemonGetData);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -135,7 +141,7 @@ namespace PokemonGoGetLog.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
