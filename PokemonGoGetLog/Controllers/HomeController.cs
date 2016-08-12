@@ -42,6 +42,10 @@ namespace PokemonGoGetLog.Controllers
             return View(pokemonGetData);
         }
 
+#if DEBUG
+#else
+        [RequireHttps]
+#endif
         // GET: PokemonGetDatas/Create
         public ActionResult Create()
         {
@@ -65,6 +69,10 @@ namespace PokemonGoGetLog.Controllers
         // 詳細については、http://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
+#if DEBUG
+#else
+        [RequireHttps]
+#endif
         public async Task<ActionResult> Create([Bind(Include = "PokemonGetDataId,PokemonName,Position,MapX,MapY,Cp,User,ImageUrl,CreateDateTime,UpdateDateTime")] PokemonGetData pokemonGetData)
         {
             pokemonGetData.Pokemons = PokemonNames.Data.OrderBy(x => x).Select((val, idx) => new PokemonData
