@@ -47,6 +47,9 @@ class GoogleMapUtil {
                         $("#loading").fadeOut();
                         $("#container").fadeIn();
                         return;
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000
                     }
                 );
             } else {

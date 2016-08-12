@@ -14,9 +14,7 @@ namespace PokemonGoGetLog.Controllers
 {
     public class HomeController : Controller
     {
-        //
-        private const string GoogleMapUrl = "https://maps-api-ssl.google.com/maps/api/js?libraries=places&key=";
-        //private const string GoogleMapUrl = "http://maps.googleapis.com/maps/api/js?libraries=places&key=";
+        private const string GoogleMapUrl = "https://maps-api-ssl.google.com/maps/api/js?sensor=true&libraries=places&key=";
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
         public ActionResult Index(int? page)
@@ -61,6 +59,7 @@ namespace PokemonGoGetLog.Controllers
             var appSettings = ConfigurationManager.AppSettings;
             var appKey = appSettings["GoogleMapAPI"];
             ViewBag.GoogleMapUrl = GoogleMapUrl + appKey;
+            ViewBag.User = string.IsNullOrEmpty(GetCookie("User")) ? string.Empty : GetCookie("User");
             return View(pokemonGetData);
         }
 
@@ -82,6 +81,7 @@ namespace PokemonGoGetLog.Controllers
             });
             if (ModelState.IsValid)
             {
+                SetCookie("User", pokemonGetData.User);
                 _db.PokemonGetDatas.Add(pokemonGetData);
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -169,5 +169,22 @@ namespace PokemonGoGetLog.Controllers
 
             return View();
         }
+
+
+        private void SetCookie(string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                var cookie = new HttpCookie(key)
+                {
+                    Value = value,
+                    Expires = DateTime.Now.AddYears(50)
+                };
+                Response.Cookies.Add(cookie);
+            }
+        }
+        private string GetCookie(string key) => Request.Cookies[key]?.Value;
+
+
     }
 }
