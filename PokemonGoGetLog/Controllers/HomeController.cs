@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,27 +19,37 @@ namespace PokemonGoGetLog.Controllers
         private const string GoogleMapUrl = "https://maps-api-ssl.google.com/maps/api/js?sensor=true&libraries=places&key=";
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
+        //ToDo ページ機能動いていない。。。
         public ActionResult Index(int? page)
         {
             //https://github.com/TroyGoode/PagedList
-            var datas = _db.PokemonGetDatas.OrderBy(x => x.CreateDateTime);
+            var srcDatas = _db.PokemonGetDatas.Join(_db.PokemonDatas, p => p.PokemonName, c => c.ImageName,
+                (p, c) => new
+                {
+                    p.PokemonName,
+                    c.Name,
+                    p.Position,
+                    p.Cp,
+                    p.User,
+                    p.CreateDateTime
+                });
+
+            var dstDatas = new List<PokemonGetData>();
+            foreach (var srcData in srcDatas)
+            {
+                dstDatas.Add(new PokemonGetData
+                {
+                    PokemonName = srcData.Name,
+                    PokemonImageName = srcData.PokemonName,
+                    Position = srcData.Position,
+                    Cp = srcData.Cp,
+                    User = srcData.User,
+                    CreateDateTime = srcData.CreateDateTime,
+                });
+            }
+            var datas = dstDatas.OrderBy(x => x.CreateDateTime);
             var pageNumber = page ?? 1;
             return View(datas.ToPagedList(pageNumber, 25));
-        }
-
-        // GET: PokemonGetDatas/Details/5
-        public async Task<ActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
-            if (pokemonGetData == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pokemonGetData);
         }
 
 #if DEBUG
@@ -47,15 +59,7 @@ namespace PokemonGoGetLog.Controllers
         // GET: PokemonGetDatas/Create
         public ActionResult Create()
         {
-            var pokemonGetData = new PokemonGetData
-            {
-                Pokemons = PokemonNames.Data.OrderBy(x => x).Select((val, idx) => new PokemonData
-                {
-                    Id = idx,
-                    Name = val
-                })
-            };
-
+            var pokemonGetData = new PokemonGetData {Pokemons = _db.PokemonDatas};
             var appSettings = ConfigurationManager.AppSettings;
             var appKey = appSettings["GoogleMapAPI"];
             ViewBag.GoogleMapUrl = GoogleMapUrl + appKey;
@@ -74,11 +78,7 @@ namespace PokemonGoGetLog.Controllers
 #endif
         public async Task<ActionResult> Create([Bind(Include = "PokemonGetDataId,PokemonName,Position,MapX,MapY,Cp,User,ImageUrl,CreateDateTime,UpdateDateTime")] PokemonGetData pokemonGetData)
         {
-            pokemonGetData.Pokemons = PokemonNames.Data.OrderBy(x => x).Select((val, idx) => new PokemonData
-            {
-                Id = idx,
-                Name = val
-            });
+            pokemonGetData.Pokemons = _db.PokemonDatas;
             if (ModelState.IsValid)
             {
                 SetCookie("User", pokemonGetData.User);
@@ -90,62 +90,6 @@ namespace PokemonGoGetLog.Controllers
             return View(pokemonGetData);
         }
 
-        // GET: PokemonGetDatas/Edit/5
-        public async Task<ActionResult> Edit(long? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
-            if (pokemonGetData == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pokemonGetData);
-        }
-
-        // POST: PokemonGetDatas/Edit/5
-        // 過多ポスティング攻撃を防止するには、バインド先とする特定のプロパティを有効にしてください。
-        // 詳細については、http://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "PokemonGetDataId,PokemonName,Position,MapX,MapY,Cp,User,ImageUrl,CreateDateTime,UpdateDateTime")] PokemonGetData pokemonGetData)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.Entry(pokemonGetData).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(pokemonGetData);
-        }
-
-        // GET: PokemonGetDatas/Delete/5
-        public async Task<ActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
-            if (pokemonGetData == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pokemonGetData);
-        }
-
-        // POST: PokemonGetDatas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(long id)
-        {
-            PokemonGetData pokemonGetData = await _db.PokemonGetDatas.FindAsync(id);
-            _db.PokemonGetDatas.Remove(pokemonGetData);
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -170,6 +114,34 @@ namespace PokemonGoGetLog.Controllers
             return View();
         }
 
+        private static IEnumerable<PokemonData> GetPokemonDatas()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            using (var con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                using (var command = new SqlCommand("select * from PokemonDatas", con))
+                {
+                    using (var sdr = command.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            var co = 0;
+                            while (sdr.Read())
+                            {
+                                var data = new PokemonData
+                                {
+                                    Id = sdr["EnName"].ToString(),
+                                    Name = sdr["JpName"].ToString()
+                                };
+                                yield return data;
+                                co++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         private void SetCookie(string key, string value)
         {

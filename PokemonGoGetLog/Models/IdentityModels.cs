@@ -24,7 +24,7 @@ namespace PokemonGoGetLog.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DefaultConnection", false)
         {
         }
 
@@ -58,5 +58,6 @@ namespace PokemonGoGetLog.Models
         }
 
         public DbSet<PokemonGetData> PokemonGetDatas { get; set; }
+        public DbSet<PokemonData> PokemonDatas { get; set; }
     }
 }

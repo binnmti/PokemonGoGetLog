@@ -10,11 +10,12 @@
 
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
+        <div class="form-group form-inline">
             <label for="name_family" class="control-label col-md-2 head"><span class="required">必須</span>ポケモン</label>
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.PokemonName, new SelectList(Model.Pokemons, "Name", "Name"), new {@class = "form-control"})
-                @Html.ValidationMessageFor(model => model.PokemonName, "", new {@class = "text-danger"})
+                @Html.DropDownListFor(model => model.PokemonName, new SelectList(Model.Pokemons, "ImageName", "Name"), new { @class = "form-control"})
+                <img id="image" style="max-width:32px" src="~/Content/wiki/Abra.png" />
+                @Html.ValidationMessageFor(model => model.PokemonName, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -30,7 +31,7 @@
         </div>
 
         <div class="map-embed">
-            ↓下のマップをクリックすると場所が特定できます
+            ↓マップをクリックすると場所が特定できます
             <div id="map-canvas"></div>
         </div>
 
@@ -73,7 +74,7 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 
-<script type="text/javascript" src= @ViewBag.GoogleMapUrl>
+<script type="text/javascript" src=@ViewBag.GoogleMapUrl>
 </script>
 <script src="~/Scripts/GoogleMapUtil.js"></script>
 <script type="text/javascript">
@@ -82,7 +83,6 @@
     //マップをクリックした時コールバック
     function onClickMap(latlng, address) {
         $("#Position").val(address);
-        //document.getElementById("Position").value = address;
         document.getElementById("MapX").value = latlng.lat();
         document.getElementById("MapY").value = latlng.lng();
     }
@@ -91,6 +91,16 @@
         if (e.keyCode == 13)
             return false;
     }
+
+    $("select")
+      .change(function () {
+          var str = "";
+          $("select option:selected").each(function () {
+              str += $(this).val();
+          });
+          $("#image").attr("src", "../Content/wiki/" + str + ".png");
+      })
+      .change();
 
     function clr() {
         $("#Position").val("");

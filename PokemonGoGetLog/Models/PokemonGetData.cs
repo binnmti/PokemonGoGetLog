@@ -11,6 +11,7 @@ namespace PokemonGoGetLog.Models
 
         [Display(Name = "ポケモン")]
         public string PokemonName { get; set; }
+        public string PokemonImageName { get; set; }
         public IEnumerable<PokemonData> Pokemons { get; set; }
 
         [Display(Name = "ゲットした場所")]
