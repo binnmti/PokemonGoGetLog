@@ -19,7 +19,6 @@ namespace PokemonGoGetLog.Controllers
         private const string GoogleMapUrl = "https://maps-api-ssl.google.com/maps/api/js?sensor=true&libraries=places&key=";
         private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
-        //ToDo ページ機能動いていない。。。
         public ActionResult Index(int? page)
         {
             //https://github.com/TroyGoode/PagedList
@@ -49,7 +48,7 @@ namespace PokemonGoGetLog.Controllers
             }
             var datas = dstDatas.OrderBy(x => x.CreateDateTime);
             var pageNumber = page ?? 1;
-            return View(datas.ToPagedList(pageNumber, 25));
+            return View(datas.ToPagedList(pageNumber, 10));
         }
 
 #if DEBUG

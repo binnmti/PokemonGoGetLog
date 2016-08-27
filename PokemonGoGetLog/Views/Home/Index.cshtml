@@ -31,7 +31,7 @@
     {
         <tr>
             <td>
-                <img id="image" style="max-width:32px" src="~/Content/wiki/@(item.PokemonImageName).png" />
+                <img id="image" style="max-width:24px" src="~/Content/wiki/@(item.PokemonImageName).png" />
                 @Html.DisplayFor(modelItem => item.PokemonName)
             </td>
             <td>
@@ -49,4 +49,4 @@
         </tr>
     }
 </table>
-@Html.PagedListPager(Model, page => Url.Action("Index", page))
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page = page} ))
